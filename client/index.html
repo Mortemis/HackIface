@@ -43,9 +43,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Home</a>
+                <a class="navbar-brand" href="/">System Monitor</a>
+                <a class="navbar-brand" href="/lanmonitor.html">LAN Monitor</a>
             </div>
-            
+
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <!-- 
@@ -75,7 +76,6 @@
 
 
     <div class="container">
-        <!-- Typography -->
         <div class="row tall-row">
             <div class="col-lg-12">
                 <h1>Main server monitor</h1>
@@ -88,105 +88,33 @@
                 <div class="progress progress-striped active">
                     <div id="loadBar" class="progress-bar progress-bar-info"></div>
                 </div>
-                <script>
-                    setInterval(updateLoad, 1000)
-                    updateLoad();
-                    function updateLoad() {
-                        $.get('/api/sysinfo/coreload', '', gotLoad);
-                    }
-                    function gotLoad(data) {
-                        document.getElementById("loadBar").style.width = `${data}%`;
-                        document.getElementById("processorLoadText").innerText = `Processor load | ${data}%`;
-                    }
-                </script>
+                <script src="js/proc.js"></script>
                 <h2 id=memText>Memory | </h2>
                 <div class="progress progress-striped active">
                     <div id="memBar" class="progress-bar progress-bar-info" style="width: 0%"></div>
                 </div>
-                <script>
-                    var totalMemory;
-                    $.get('/api/sysinfo/mem', '', gotTotalMem)
-                    setInterval(updateMemory, 1000)
-                    updateMemory();
-                    
-                    function updateMemory() {
-                        $.get('/api/sysinfo/usedmem', '', gotMem);
-                    }
-                    function gotMem(data) {
-                        var usedMemory = Math.floor(data/1024/1024);
-                        var percentage = usedMemory/totalMemory*100;
-                        document.getElementById("memBar").style.width = `${percentage}%`;
-                        document.getElementById("memText").innerText = `Memory | ${usedMemory}/${totalMemory}`;
-                    }
-                    function gotTotalMem(data) {
-                        totalMemory = Math.floor(data/1024/1024);
-                    }
-                    
-                </script>
-                <h2>Disk 1</h2>
+                <script src="js/memory.js"></script>
+                <!-- <h2>Disk 1</h2>
                 <div class="progress progress-striped active">
                     <div class="progress-bar progress-bar-info" style="width: 0%"></div>
                 </div>
                 <h2>Disk 2</h2>
                 <div class="progress progress-striped active">
                     <div class="progress-bar progress-bar-info" style="width: 0%"></div>
-                </div>
+                </div> -->
             </div>
             <div class="col-md-4">
                 <h2>Core temperature</h2>
-                <hr>
                 <h1 id="temperatureText"></h1>
-                <script>
-                    updateTemp();
-                    setInterval(updateTemp, 1000)
-                    function updateTemp() {
-                        $.get('/api/sysinfo/temp', '', gotTemp);
-                    }
-                    function gotTemp(data) {
-                        document.getElementById("temperatureText").innerText = `${data}°C`;
-                    }
-
-                </script>
+                <script src="js/temp.js"></script>
             </div>
             <div class="col-md-4">
                 <h2>Uptime</h2>
-                <hr>
-                <h1 id="uptimeText"></h1>
-                <script>
-                    updateUptime();
-                    setInterval(updateUptime, 1000)
-                    function updateUptime() {
-                        $.get('/api/sysinfo/uptime', '', gotUptime);
-                    }
-                    function gotUptime(data) {
-                        document.getElementById("uptimeText").innerText = secondsToString(data);
-                    }
-                    function secondsToString(data) {
-                        var seconds;
-                        var minutes;
-                        var hours;
-                        var days;
-                        seconds = data%60;
-                        minutes = Math.floor(data/60)%60;
-                        hours = Math.floor((data/60)/60)%24;
-                        days = Math.floor(((data/60)/60)/24)
-                        var string = `${days} days\n ${hours} hours\n ${minutes} minutes\n ${seconds} seconds`;
-                        return string;
-                    }
-
-                </script>
+                <h3 id="uptimeText"></h3>
+                <script src="js/uptime.js"></script>
             </div>
         </div>
-
-
-        <!-- Github stars script -->
-        <script>
-            $(document).ready(function () {
-                $.getJSON("https://api.github.com/repos/brobin/hacker-bootstrap", function (data) {
-                    var stars = data['stargazers_count'];
-                    $("#stars").text(stars + " stars");
-                });
-            });
-        </script>
+        <hr>
+</body>
 
 </html>

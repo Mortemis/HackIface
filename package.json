@@ -1,0 +1,27 @@
+{
+  "name": "server-interface",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "evilscan": "^1.7.5",
+    "express": "^4.16.4",
+    "jquery": "^3.3.1",
+    "local-network-scanner": "^0.2.0",
+    "systeminformation": "^4.0.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mortemis/HackIface.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mortemis/HackIface/issues"
+  },
+  "homepage": "https://github.com/Mortemis/HackIface#readme"
+}
