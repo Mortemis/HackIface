@@ -13,7 +13,7 @@ var usedMemory;
 // Static website lies here.
 app.use(express.static(staticDirectory));
 
-
+// Get requests responses.
 app.get('/api/sysinfo/temp', function(req, res) {
     res.send(coreTemp+'');
 });
@@ -34,7 +34,7 @@ app.get('/api/sysinfo/usedmem', function(req, res) {
     res.send(usedMemory+'');
 });
 
-// 404 page
+// 404 page.
 app.get('*', function (req, res) {
     res.sendFile(staticDirectory + '/404.html');
 });
@@ -46,15 +46,13 @@ app.listen(port, (err) => {
         return console.log(`Can\'t start server. Something running on port ${port} or missing root privileges.`, err)
     }
     console.log(`Server is listening on port ${port}.`)
-    setInterval(tempUpdater, 1000);
-    setInterval(coreLoadUpdater, 1000);
-    setInterval(uptimeUpdater, 1000);
+    initSystemInfo();
 })
 
-//TODO
+// Set up timers to update system info.
 function initSystemInfo() {
     sysinfo.mem()
-    .then(data => setUsedMemory(data.active))
+    .then(data => setMemory(data.total))
     .catch();
 
     setInterval(tempUpdater, 1000);
@@ -63,20 +61,11 @@ function initSystemInfo() {
     setInterval(memoryUpdater, 1000);
 }
 
-function setTemp(temp) {
-    coreTemp = temp;
-}
-
+// Updaters - looped functions.
 function tempUpdater() {
     sysinfo.cpuTemperature()
     .then(data => setTemp(data.max))
     .catch();
-}
-
-function setCoreLoad(load) {
-    coreLoad = load;
-    coreLoad = Math.trunc(coreLoad);
-    //console.log(coreLoad.toFixed(1));
 }
 
 function coreLoadUpdater() {
@@ -85,27 +74,35 @@ function coreLoadUpdater() {
     .catch();
 }
 
-function setUptime(_uptime) {
-    uptime = _uptime;
-    //console.log(uptime);
-}
-
 function uptimeUpdater() {
     var time = sysinfo.time();
     setUptime(time.uptime);
 }
 
+function memoryUpdater() {  
+    sysinfo.mem()
+    .then(data => setUsedMemory(data.active))
+    .catch();
+}
+
+// Setters.
+function setTemp(temp) {
+    coreTemp = temp;
+}
+
+function setCoreLoad(load) {
+    coreLoad = load;
+    coreLoad = Math.trunc(coreLoad);
+}
+
+function setUptime(_uptime) {
+    uptime = _uptime;
+}
+
 function setMemory(_memory) {
-    memory = _memory;
-    //console.log(memory);
+    totalMemory = _memory;
 }
 
 function setUsedMemory(_memory) {
     usedMemory = _memory;
-}
-
-function memoryUpdater() {
-    sysinfo.mem()
-    .then(data => setMemory(data.total))
-    .catch();
 }
