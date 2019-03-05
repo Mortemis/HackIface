@@ -1,9 +1,14 @@
 const express = require('express');
 const sysinfo = require('systeminformation');
 const evilscan = require('evilscan');
+
 const app = express();
 const port = 3000;
+
 const staticDirectory = __dirname + '/client';
+
+const updateInterval = 1000; 
+const netUpdateInterval = 5000;
 
 var coreTemp;
 var coreLoad;
@@ -14,6 +19,7 @@ var usedMemory;
 var addrTemp = [];
 var addrOnline = [];
 
+
 var options = {
     target: '10.10.10.1-254',
     port: '22',
@@ -23,25 +29,10 @@ var options = {
 
 var scanner = new evilscan(options);
 
-
-scanner.on('result', function (data) {
-    // fired when item is matching options
-    if (data.status != 'closed (timeout)') {
-        addrTemp.push(data.ip);
-    }
-});
-
-scanner.on('error', function (err) {
-    throw new Error(data.toString());
-});
-
-scanner.on('done', function () {
-    console.log('Scan\'s done!')
-    addrOnline = addrTemp.sort();
-});
+initLanScanner();
 
 
-
+//#region Setting up request handlers
 // Static website lies here.
 app.use(express.static(staticDirectory));
 
@@ -66,15 +57,28 @@ app.get('/api/sysinfo/usedmem', function (req, res) {
     res.send(usedMemory + '');
 });
 
+app.get('/api/system/dropcache', function (req, res) {
+    var data = req.query;
+    const passwd = 'gurrenlagann';
+    if (data.pass == passwd) {
+        res.send(true);
+        //drop cache
+    } else {
+        res.send(false);
+    }
+});
+
 app.get('/api/test', function (req, res) {
     console.log(addrOnline);
 });
+
+
 
 // 404 page.
 app.get('*', function (req, res) {
     res.sendFile(staticDirectory + '/404.html');
 });
-
+//#endregion
 
 
 app.listen(port, (err) => {
@@ -85,25 +89,40 @@ app.listen(port, (err) => {
     initSystemInfo();
 })
 
-
-
-
-
-
 // Set up timers to update system info.
 function initSystemInfo() {
     sysinfo.mem()
         .then(data => setMemory(data.total))
         .catch();
-
-    setInterval(tempUpdater, 1000);
-    setInterval(coreLoadUpdater, 1000);
-    setInterval(uptimeUpdater, 1000);
-    setInterval(memoryUpdater, 1000);
-    setInterval(networkScanUpdater, 1000)
+    setInterval(tempUpdater, updateInterval);
+    setInterval(coreLoadUpdater, updateInterval);
+    setInterval(uptimeUpdater, updateInterval);
+    setInterval(memoryUpdater, updateInterval);
+    
+    setInterval(networkScanUpdater, netUpdateInterval)
 }
 
-// Updaters - looped functions.
+function initLanScanner() {
+    scanner.on('result', function (data) {
+        // fired when item is matching options
+        if (data.status != 'closed (timeout)') {
+            addrTemp.push(data.ip);
+            //console.log(data);
+        }
+    });
+    
+    scanner.on('error', function (err) {
+        throw new Error(data.toString());
+    });
+    
+    scanner.on('done', function () {
+        //console.log('Scan\'s done!')
+        addrOnline = addrTemp.sort();
+        //console.log(addrOnline);
+    });
+}
+
+//#region Updaters - looped functions.
 function tempUpdater() {
     sysinfo.cpuTemperature()
         .then(data => setTemp(data.max))
@@ -128,10 +147,11 @@ function memoryUpdater() {
 }
 
 function networkScanUpdater() {
+    addrTemp = [];
     scanner.run();
 }
-
-// Updater setters.
+//#endregion
+//#region Updater setters.
 function setTemp(temp) {
     coreTemp = temp;
 }
@@ -152,4 +172,4 @@ function setMemory(_memory) {
 function setUsedMemory(_memory) {
     usedMemory = _memory;
 }
-
+//#endregion
