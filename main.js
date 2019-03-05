@@ -1,6 +1,5 @@
 const express = require('express');
 const sysinfo = require('systeminformation');
-const evilscan = require('evilscan');
 
 const app = express();
 const port = 3000;
@@ -16,20 +15,8 @@ var uptime;
 var totalMemory;
 var usedMemory;
 
-var addrTemp = [];
-var addrOnline = [];
 
 
-var options = {
-    target: '10.10.10.1-254',
-    port: '22',
-    status: 'TROU', // Timeout, Refused, Open, Unreachable
-    banner: false
-};
-
-var scanner = new evilscan(options);
-
-initLanScanner();
 
 
 //#region Setting up request handlers
@@ -99,28 +86,9 @@ function initSystemInfo() {
     setInterval(uptimeUpdater, updateInterval);
     setInterval(memoryUpdater, updateInterval);
     
-    setInterval(networkScanUpdater, netUpdateInterval)
+    //setInterval(networkScanUpdater, netUpdateInterval)
 }
 
-function initLanScanner() {
-    scanner.on('result', function (data) {
-        // fired when item is matching options
-        if (data.status != 'closed (timeout)') {
-            addrTemp.push(data.ip);
-            //console.log(data);
-        }
-    });
-    
-    scanner.on('error', function (err) {
-        throw new Error(data.toString());
-    });
-    
-    scanner.on('done', function () {
-        //console.log('Scan\'s done!')
-        addrOnline = addrTemp.sort();
-        //console.log(addrOnline);
-    });
-}
 
 //#region Updaters - looped functions.
 function tempUpdater() {
