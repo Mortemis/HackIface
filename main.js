@@ -1,13 +1,27 @@
 const express = require('express');
 const sysinfo = require('systeminformation');
-
+const ping = require('ping');
+const mongo = require('mongoose');
+const arp = require('node-arp');
 const app = express();
 const port = 3000;
 
 const staticDirectory = __dirname + '/client';
+const updateInterval = 1000;
+const netUpdateInterval = 50000;
+const myIP = '10.10.10.180';
+const myMAC = 'WOW IT IS ME';
 
-const updateInterval = 1000; 
-const netUpdateInterval = 5000;
+
+const Schema = mongo.Schema;
+const scheme = new Schema({
+    ip: String,
+    mac: String,
+    note: String, 
+    is_alive: Boolean
+});
+mongo.connect("mongodb://localhost:27017/network", { useNewUrlParser: true }).then(console.log('Database connected.'));
+var Host = mongo.model("Host", scheme);
 
 var coreTemp;
 var coreLoad;
@@ -15,15 +29,14 @@ var uptime;
 var totalMemory;
 var usedMemory;
 
-
-
+//test array for frontend
+var testHosts = [['10.10.10.1', 'FF::F1', 'Gateway'], ['10.10.10.2', 'FF::F2', 'Shit'], ['10.10.10.3', 'FF::F3', 'Unregistered']];
 
 
 //#region Setting up request handlers
 // Static website lies here.
 app.use(express.static(staticDirectory));
 
-// Get requests responses.
 app.get('/api/sysinfo/temp', function (req, res) {
     res.send(coreTemp + '');
 });
@@ -49,14 +62,28 @@ app.get('/api/system/dropcache', function (req, res) {
     const passwd = 'gurrenlagann';
     if (data.pass == passwd) {
         res.send(true);
-        //drop cache
+        //TODO drop cache script running here
     } else {
         res.send(false);
     }
 });
 
 app.get('/api/test', function (req, res) {
-    console.log(addrOnline);
+    res.send(testHosts);
+
+});
+
+app.get('/api/network', function (req, res) {
+    Host.find({'is_alive':true}, 'ip mac note', function(err, hosts) {
+        
+        var hostArray = [];
+
+        Object.keys(hosts).forEach(function (host) {
+        
+            hostArray.push([hosts[host].ip, hosts[host].mac, hosts[host].note]);
+        });
+        res.send(hostArray);
+    });
 });
 
 
@@ -85,8 +112,8 @@ function initSystemInfo() {
     setInterval(coreLoadUpdater, updateInterval);
     setInterval(uptimeUpdater, updateInterval);
     setInterval(memoryUpdater, updateInterval);
-    
-    //setInterval(networkScanUpdater, netUpdateInterval)
+
+    setInterval(networkScanUpdater, netUpdateInterval)
 }
 
 
@@ -115,10 +142,27 @@ function memoryUpdater() {
 }
 
 function networkScanUpdater() {
-    addrTemp = [];
-    scanner.run();
+    //TODO scan
+    for (let i = 1; i < 255; i++) {
+        checkHost(`10.10.10.${i}`);
+    }
+    /*
+        for (let i = 1; i <= 254; i++) {
+            let _host = Host.findOne(`10.10.10.${i}`)   
+        }
+    */
+    /*var host = new Host(
+        {
+            ip: "10.10.10.1",
+            mac: "FF::FF",
+            note: "Gateway",
+            is_alive: "true"
+        }
+    );*/
 }
+
 //#endregion
+
 //#region Updater setters.
 function setTemp(temp) {
     coreTemp = temp;
@@ -141,3 +185,69 @@ function setUsedMemory(_memory) {
     usedMemory = _memory;
 }
 //#endregion
+
+//if host state is changed, it changes in a database.
+function checkHost(ip) {
+    ping.sys.probe(ip, function (isAlive) {
+        Host.findOne({ 'ip': ip }, 'ip mac is_alive', function (err, host) {
+            if (err) { console.log('Query failed. Database corrupt.'); }
+
+            if (host.is_alive != isAlive) {
+
+                Host.updateOne({ 'ip': host.ip }, { 'is_alive': isAlive }, function (err, ip) {
+                    console.log(`[${host.ip}] State updated to ${isAlive ? "Alive" : "Dead"}.`);
+                });
+            }
+
+            if (host.is_alive == true) {
+
+                var _mac = 'N/A';
+                arp.getMAC(host.ip, function (err, mac) {
+                    if (!err) {
+
+                        if (host.ip != myIP) { //Bug here - undefined on selfscan
+                            _mac = mac.toUpperCase();
+                        } else { _mac = myMAC; }
+                        if (host.mac !== _mac) {
+                            Host.updateOne({ 'ip': host.ip }, { 'mac': _mac }, function (err, ip) {
+                                console.log(`[${host.ip}] MAC changed to ${_mac}.`);
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+}
+
+async function fetchMAC(_ip) {
+    var _hostMAC = 'N/A';
+    var flag = false;
+    if (_ip == '10.10.10.180') { return 'WOW I AM SERVER'; }
+    await console.log(`Fetching mac for ${_ip}`)
+    await arp.getMAC(_ip, function (err, mac) {
+        if (!err) {
+            _hostMAC = mac.toUpperCase();
+            //console.log(_hostMAC);
+            flag = true;
+        }
+    });
+
+    return _hostMAC;
+}
+
+function generateDatabaseTemplate() {
+    Host.collection.drop();
+    for (let i = 1; i < 255; i++) {
+        let _hostname = `10.10.10.${i}`;
+        let _host = new Host({ ip: _hostname, mac: 'N/A', note: 'Unregistered', is_alive: false });
+
+        _host.save(function (err) {
+            if (err) return console.log(err);
+        });
+    }
+}
+
+function alarm(whatHappened, data) {
+
+}
