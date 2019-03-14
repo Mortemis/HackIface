@@ -9,8 +9,13 @@ const port = 3000;
 const staticDirectory = __dirname + '/client';
 const updateInterval = 1000;
 const netUpdateInterval = 50000;
-const myIP = '10.10.10.180';
-const myMAC = 'WOW IT IS ME';
+
+const networkInterface = 1; //TODO add this to config;
+
+var myIP;
+sysinfo.networkInterfaces().then(data => function (data){myIP = data[networkInterface].ip4});
+var myMAC;
+sysinfo.networkInterfaces().then(data => function (data){myIP = data[networkInterface].mac.toUpperCase});
 
 
 const Schema = mongo.Schema;
@@ -34,8 +39,14 @@ var testHosts = [['10.10.10.1', 'FF::F1', 'Gateway'], ['10.10.10.2', 'FF::F2', '
 
 
 //#region Setting up request handlers
+//TODO router
 // Static website lies here.
 app.use(express.static(staticDirectory));
+
+
+app.get('/network', function (req, res) {
+    res.sendFile(staticDirectory+'/'+'lanmonitor.html');
+});
 
 app.get('/api/sysinfo/temp', function (req, res) {
     res.send(coreTemp + '');
@@ -104,86 +115,48 @@ app.listen(port, (err) => {
 })
 
 // Set up timers to update system info.
-function initSystemInfo() {
-    sysinfo.mem()
-        .then(data => setMemory(data.total))
-        .catch();
+async function initSystemInfo() {
+    mem = await sysinfo.mem();
+    totalMemory = mem.total;
+
     setInterval(tempUpdater, updateInterval);
     setInterval(coreLoadUpdater, updateInterval);
     setInterval(uptimeUpdater, updateInterval);
     setInterval(memoryUpdater, updateInterval);
 
-    setInterval(networkScanUpdater, netUpdateInterval)
+    setInterval(networkScanUpdater, netUpdateInterval);
 }
 
 
 //#region Updaters - looped functions.
-function tempUpdater() {
-    sysinfo.cpuTemperature()
-        .then(data => setTemp(data.max))
-        .catch();
+async function tempUpdater() {
+    let temp = await sysinfo.cpuTemperature();
+    coreTemp = temp.max;
 }
 
-function coreLoadUpdater() {
-    sysinfo.currentLoad()
-        .then(data => setCoreLoad(data.currentload))
-        .catch();
+async function coreLoadUpdater() {
+    let load = await sysinfo.currentLoad();
+    coreLoad = Math.trunc(load.currentload);
+}
+
+async function memoryUpdater() {
+    let mem = await sysinfo.mem();
+    usedMemory = mem.active;
 }
 
 function uptimeUpdater() {
-    var time = sysinfo.time();
-    setUptime(time.uptime);
+    let time = sysinfo.time();
+    uptime = time.uptime;
 }
 
-function memoryUpdater() {
-    sysinfo.mem()
-        .then(data => setUsedMemory(data.active))
-        .catch();
-}
+
 
 function networkScanUpdater() {
-    //TODO scan
     for (let i = 1; i < 255; i++) {
         checkHost(`10.10.10.${i}`);
     }
-    /*
-        for (let i = 1; i <= 254; i++) {
-            let _host = Host.findOne(`10.10.10.${i}`)   
-        }
-    */
-    /*var host = new Host(
-        {
-            ip: "10.10.10.1",
-            mac: "FF::FF",
-            note: "Gateway",
-            is_alive: "true"
-        }
-    );*/
 }
 
-//#endregion
-
-//#region Updater setters.
-function setTemp(temp) {
-    coreTemp = temp;
-}
-
-function setCoreLoad(load) {
-    coreLoad = load;
-    coreLoad = Math.trunc(coreLoad);
-}
-
-function setUptime(_uptime) {
-    uptime = _uptime;
-}
-
-function setMemory(_memory) {
-    totalMemory = _memory;
-}
-
-function setUsedMemory(_memory) {
-    usedMemory = _memory;
-}
 //#endregion
 
 //if host state is changed, it changes in a database.
@@ -200,11 +173,9 @@ function checkHost(ip) {
             }
 
             if (host.is_alive == true) {
-
                 var _mac = 'N/A';
                 arp.getMAC(host.ip, function (err, mac) {
                     if (!err) {
-
                         if (host.ip != myIP) { //Bug here - undefined on selfscan
                             _mac = mac.toUpperCase();
                         } else { _mac = myMAC; }
@@ -220,34 +191,3 @@ function checkHost(ip) {
     });
 }
 
-async function fetchMAC(_ip) {
-    var _hostMAC = 'N/A';
-    var flag = false;
-    if (_ip == '10.10.10.180') { return 'WOW I AM SERVER'; }
-    await console.log(`Fetching mac for ${_ip}`)
-    await arp.getMAC(_ip, function (err, mac) {
-        if (!err) {
-            _hostMAC = mac.toUpperCase();
-            //console.log(_hostMAC);
-            flag = true;
-        }
-    });
-
-    return _hostMAC;
-}
-
-function generateDatabaseTemplate() {
-    Host.collection.drop();
-    for (let i = 1; i < 255; i++) {
-        let _hostname = `10.10.10.${i}`;
-        let _host = new Host({ ip: _hostname, mac: 'N/A', note: 'Unregistered', is_alive: false });
-
-        _host.save(function (err) {
-            if (err) return console.log(err);
-        });
-    }
-}
-
-function alarm(whatHappened, data) {
-
-}
