@@ -1,6 +1,7 @@
 const netUpdateInterval = 50000;
 const express = require('express');
 const router = express.Router();
+const request = require('request-promise');
 
 const subnet = '10.10.10.';
 var myIP = '10.10.10.180';
@@ -23,8 +24,7 @@ mongo.connect("mongodb://localhost:27017/network", { useNewUrlParser: true }).th
 
 var Host = mongo.model("Host", scheme);
 
-
-setInterval(networkScanUpdater, netUpdateInterval);
+initNetworkScanner();
 
 router.get('/', function (req, res) {
     Host.find({ 'is_alive': true }, 'ip mac note', function (err, hosts) {
@@ -38,7 +38,17 @@ router.get('/', function (req, res) {
 
 module.exports = router;
 
+async function initLocalIPAndMAC() {
+    let ip = await request('http://localhost:3000/api/sysinfo/ip');
+    let mac = await request('http://localhost:3000/api/sysinfo/mac');
+    myIP = ip;
+    myMAC = mac;
+}
 
+async function initNetworkScanner() {
+    await initLocalIPAndMAC();
+    setInterval(networkScanUpdater, netUpdateInterval);
+}
 
 function networkScanUpdater() {
     for (let i = 1; i < 255; i++) {

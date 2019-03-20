@@ -9,8 +9,6 @@ const networkInterface = 1; //TODO add this to config;
 var myIP;
 var myMAC;
 
-
-console.log(myIP);
 var coreTemp;
 var coreLoad;
 var uptime;
@@ -37,6 +35,12 @@ router.get('/usedmem', function (req, res) {
     res.send(usedMemory + '');
 });
 
+router.get('/mempercent', function(req, res) {
+    let percent = usedMemory/totalMemory*100;
+    percent = percent.toFixed(0);
+    res.send(percent + '');
+});
+
 router.get('/ip', function (req, res) {
     res.send(myIP + '');
 });
@@ -48,8 +52,6 @@ router.get('/mac', function (req, res) {
 initSystemInfo();
 
 module.exports = router;
-
-
 
 // Set up timers to update system info.
 async function initSystemInfo() {
