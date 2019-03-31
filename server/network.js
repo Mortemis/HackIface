@@ -2,8 +2,9 @@ const netUpdateInterval = 50000;
 const express = require('express');
 const router = express.Router();
 const request = require('request-promise');
+var config = require('../config.json');
+const subnet = config.network.subnet;
 
-const subnet = '10.10.10.';
 var myIP = '10.10.10.180';
 var myMAC = 'B4:2E:99:31:9C:C8';
 

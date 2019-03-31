@@ -1,23 +1,19 @@
 const express = require('express');
+var config = require('./config.json');
 const webdav = require('webdav-server').v2;
 const webdavServer = new webdav.WebDAVServer();
 const app = express();
-const port = 3000;
+const port = config.port;
 
 const api = require('./server/api');
 const loginExceptions = ['/css/hacker.css', '/js/login.js', '/login', '/404.html', '/favicon.ico', '/api/login', '/api/sysinfo/mac', '/api/sysinfo/ip'];
-
-const webdavEnabled = false;
-const authEnabled = false;
-
-
 const staticDirectory = __dirname + '/client';
 
 
 
 // Redirect... 
 //TODO if nosession
-if (authEnabled) {
+if (config.auth.enabled) {
     app.use((req, res, next) => {
         let isException = false;
         for (let i = 0; i < loginExceptions.length; i++) {
@@ -53,7 +49,7 @@ app.get('/network', function (req, res) {
     res.sendFile(staticDirectory + '/' + 'lanmonitor.html');
 });
 
-if (webdavEnabled) {
+if (config.webdav.enabled) {
     app.use(webdav.extensions.express('/webdav', webdavServer));
 }
 
