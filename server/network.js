@@ -20,7 +20,7 @@ const scheme = new Schema({
     is_alive: Boolean
 });
 
-mongo.connect("mongodb://localhost:27017/network", { useNewUrlParser: true }).then(console.log('Database connected.'));
+mongo.connect("mongodb://localhost:27017/network", { useNewUrlParser: true }).then(console.log('Network database connected.'));
 
 var Host = mongo.model("Host", scheme);
 

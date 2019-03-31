@@ -12,9 +12,12 @@ router.get('/', function (req, res) {
     res.send('Welcome to HackIface API.');
 });
 
+
 router.get('/login', function (req, res) {
     console.log('Login: '+req.query.login);
     console.log('Pass: '+req.query.pass);
+
+    //TODO send cookie session id.
 });
 
 
