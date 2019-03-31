@@ -1,12 +1,18 @@
 const express = require('express');
+
 const router = express.Router();
+var config = require('../config.json');
 
 var sysinfo = require('./sysinfo');
-var network = require('./network');
-
-
 router.use('/sysinfo', sysinfo);
-router.use('/network', network);
+
+var scripts = require('./scripts');
+router.use('/scripts', scripts);
+
+if (config.network.enabled) {
+    var network = require('./network');
+    router.use('/network', network);
+}
 
 router.get('/', function (req, res) {
     res.send('Welcome to HackIface API.');
@@ -21,17 +27,6 @@ router.get('/login', function (req, res) {
 });
 
 
-/*
-app.get('/api/system/dropcache', function (req, res) {
-    var data = req.query;
-    const passwd = 'gurrenlagann';
-    if (data.pass == passwd) {
-        res.send(true);
-        //TODO drop cache script running here
-    } else {
-        res.send(false);
-    }
-});
-*/
+
 
 module.exports = router;
