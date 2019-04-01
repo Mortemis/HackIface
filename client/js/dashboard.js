@@ -11,9 +11,14 @@ $.get('/api/sysinfo/mem', '', function(data) {
 
 
 function updateSystemInfo() {
+    $.get('/api/sysinfo/coreload', '', gotLoad);
     $.get('/api/sysinfo/temp', '', gotTemp);
     $.get('/api/sysinfo/usedmem', '', gotMem);
     $.get('/api/sysinfo/uptime', '', gotUptime);
+}
+
+function gotLoad(data) {
+    document.getElementById("processorLoadText").innerText = 'Processor load | ' + data + '%'; 
 }
 
 function gotTemp(data) {

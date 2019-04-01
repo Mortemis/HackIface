@@ -8,8 +8,12 @@ To install just clone this repository and run
 
 To configure the server use config.json file.
 
+Start the web server using `nodemon` , `forever` or just
+`node main`
+
 API routes:
 ```
+/api/sysinfo/coreload   - CPU load.
 /api/sysinfo/temp       - CPU temperature.
 /api/sysinfo/mem        - Total memory.
 /api/sysinfo/usedmem    - Used memory.
