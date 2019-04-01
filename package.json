@@ -20,6 +20,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "systeminformation": "^4.0.11",
+    "uuid": "^3.3.2",
     "webdav-server": "^2.4.6"
   },
   "devDependencies": {},

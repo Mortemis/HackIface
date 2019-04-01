@@ -4,7 +4,7 @@
     "updater_timeout" : 1000,
 
     "network" : {
-        "enabled" : false,
+        "enabled" : true,
         "updater_timeout" : 50000,
         "interface" : 1,
         "subnet" : "10.10.10."
@@ -13,6 +13,6 @@
         "enabled" : false
     },
     "auth" : {
-        "enabled" : false
+        "enabled" : true
     }
 } 
