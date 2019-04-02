@@ -18,6 +18,7 @@ function updateSystemInfo() {
 }
 
 function gotLoad(data) {
+    document.getElementById("loadBar").style.width = `${data}%`;
     document.getElementById("processorLoadText").innerText = 'Processor load | ' + data + '%'; 
 }
 
