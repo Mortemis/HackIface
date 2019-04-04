@@ -15,6 +15,26 @@ var uptime;
 var totalMemory;
 var usedMemory;
 
+router.get('/', function (req, res) {
+    res.send(
+        {
+            cpu: {
+                temp: coreTemp,
+                load: coreLoad,
+            },
+            memory: {
+                total: totalMemory / 1024 / 1024,
+                used: usedMemory / 1024 / 1024,
+                percent: Math.round(usedMemory / totalMemory).toFixed(0)
+            },
+            uptime: uptime,
+            network: {
+                ip: myIP,
+                mac: myMAC
+            }
+        });
+});
+
 router.get('/temp', function (req, res) {
     res.send(coreTemp + '');
 });
@@ -35,8 +55,8 @@ router.get('/usedmem', function (req, res) {
     res.send(usedMemory + '');
 });
 
-router.get('/mempercent', function(req, res) {
-    let percent = usedMemory/totalMemory*100;
+router.get('/mempercent', function (req, res) {
+    let percent = usedMemory / totalMemory * 100;
     percent = percent.toFixed(0);
     res.send(percent + '');
 });
