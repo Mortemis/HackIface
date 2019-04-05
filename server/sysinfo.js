@@ -22,10 +22,10 @@ router.get('/', function (req, res) {
                 temp: coreTemp,
                 load: coreLoad,
             },
-            memory: {
-                total: totalMemory / 1024 / 1024,
-                used: usedMemory / 1024 / 1024,
-                percent: Math.round(usedMemory / totalMemory).toFixed(0)
+            mem: {
+                total: (totalMemory / 1024 / 1024).toFixed(0),
+                used: (usedMemory / 1024 / 1024).toFixed(0),
+                percent: Math.round(usedMemory / totalMemory * 100).toFixed(0)
             },
             uptime: uptime,
             network: {
