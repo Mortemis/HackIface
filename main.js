@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 
 const api = require('./server/api');
-const loginExceptions = ['/img/', '/css/', '/js/', '/login', '/404.html', '/favicon.ico', '/api/login', '/api/sysinfo/mac', '/api/sysinfo/ip', '/index'];
+const loginExceptions = ['/img/', '/css/', '/js/', '/login', '/404.html', '/favicon.ico', '/api/login', '/api/sysinfo/mac', '/api/sysinfo/ip', '/index', '/api/sensors'];
 var idArray = [];
 const staticDirectory = __dirname + '/client';
 
@@ -82,6 +82,10 @@ app.get('/network', function (req, res) {
     } else {
         res.sendFile(staticDirectory + '/' + 'lanmonitorplaceholder.html');
     }
+});
+
+app.get('/sensors', function (req, res) {
+    res.sendFile(staticDirectory+'/sensors.html');
 });
 
 

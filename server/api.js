@@ -9,6 +9,9 @@ router.use('/sysinfo', sysinfo);
 var scripts = require('./scripts');
 router.use('/scripts', scripts);
 
+var sensors = require('./sensors');
+router.use('/sensors', sensors);
+
 if (config.network.enabled) {
     var network = require('./network');
     router.use('/network', network);
@@ -19,12 +22,6 @@ router.get('/', function (req, res) {
 });
 
 
-router.get('/login', function (req, res) {
-    console.log('Login: '+req.query.login);
-    console.log('Pass: '+req.query.pass);
-
-    //TODO send cookie session id.
-});
 
 
 

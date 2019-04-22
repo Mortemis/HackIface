@@ -13,6 +13,6 @@
         "enabled" : false
     },
     "auth" : {
-        "enabled" : true
+        "enabled" : false
     }
 } 

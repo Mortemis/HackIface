@@ -75,7 +75,11 @@ function checkHost(ip) {
                 arp.getMAC(host.ip, function (err, mac) {
                     if (!err) {
                         if (host.ip != myIP) { //Bug here - undefined on selfscan
-                            _mac = mac.toUpperCase();
+                            if (!mac == undefined) {
+                                _mac = mac.toUpperCase();
+                            } else {
+                                _mac= 'N/A';
+                            }
                         } else { _mac = myMAC; }
                         if (host.mac !== _mac) {
                             Host.updateOne({ 'ip': host.ip }, { 'mac': _mac }, function (err, ip) {
