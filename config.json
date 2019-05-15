@@ -2,7 +2,9 @@
     "port" : 3000,
     "debug_mode" : false,
     "updater_timeout" : 1000,
-
+    "sensors" : {
+        "enabled" : true
+    },
     "network" : {
         "enabled" : true,
         "updater_timeout" : 50000,
@@ -13,6 +15,6 @@
         "enabled" : false
     },
     "auth" : {
-        "enabled" : false
+        "enabled" : true
     }
 } 

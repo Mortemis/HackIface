@@ -9,8 +9,10 @@ router.use('/sysinfo', sysinfo);
 var scripts = require('./scripts');
 router.use('/scripts', scripts);
 
-var sensors = require('./sensors');
-router.use('/sensors', sensors);
+if (config.sensors.enabled) {
+    var sensors = require('./sensors');
+    router.use('/sensors', sensors);
+}
 
 if (config.network.enabled) {
     var network = require('./network');

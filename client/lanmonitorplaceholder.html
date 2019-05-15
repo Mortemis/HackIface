@@ -35,47 +35,50 @@
     <!-- Navigation menu -->
     <!-- Navigation menu -->
     <nav class="navbar navbar-default navbar-static-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                        aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/index">Home</a>
-                </div>
-    
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="/dashboard">System Monitor</a>
-                        </li>
-                        <li>
-                            <a href="/network">Network Monitor</a>
-                        </li>
-                        <li>
-                            <a href="/login" id="loginNavbar">Log in</a>
-                        </li>
-                        <script>
-                            if (document.cookie.indexOf('sessionid') !== -1) {
-                                console.log(document.cookie);
-                                document.getElementById('loginNavbar').innerText = 'Log out';
-                                //document.getElementById('loginNavbar').href = '/index';
-                                $('#loginNavbar').on('click', function (event) {
-                                    event.preventDefault(); // To prevent following the link (optional)
-                                    document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                                    $.post('/logout', {}, function (data) {
-                                        document.location.href = '/';
-                                    });
-                                });
-                            }
-                        </script>
-                    </ul>
-                </div>
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/index">Home</a>
             </div>
-        </nav>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/sensors">Sensors</a>
+                    </li>
+                    <li>
+                        <a href="/dashboard">System Monitor</a>
+                    </li>
+                    <li>
+                        <a href="/network">Network Monitor</a>
+                    </li>
+                    <li>
+                        <a href="/login" id="loginNavbar">Log in</a>
+                    </li>
+                    <script>
+                        if (document.cookie.indexOf('sessionid') !== -1) {
+                            console.log(document.cookie);
+                            document.getElementById('loginNavbar').innerText = 'Log out';
+                            //document.getElementById('loginNavbar').href = '/index';
+                            $('#loginNavbar').on('click', function (event) {
+                                event.preventDefault(); // To prevent following the link (optional)
+                                document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                                $.post('/logout', {}, function (data) {
+                                    document.location.href = '/';
+                                });
+                            });
+                        }
+                    </script>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
 
     <div class="container">

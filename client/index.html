@@ -37,6 +37,9 @@
             </div>
             <ul id="navbar" class="nav navbar-nav navbar-right">
                 <li>
+                    <a href="/sensors">Sensors</a>
+                </li>
+                <li>
                     <a href="/dashboard">System Monitor</a>
                 </li>
                 <li>
@@ -50,7 +53,7 @@
         <script>
             if (document.cookie.indexOf('sessionid') !== -1) {
                 console.log(document.cookie);
-                document.getElementById('navbar').innerHTML = '<li><a href="/dashboard">System Monitor</a></li><li><a href="/network">Network Monitor</a></li><li><a href="/" id="logbutton">Log out</a></li>';
+                document.getElementById('navbar').innerHTML = '<li><a href="/sensors">Sensors</a></li><li><a href="/dashboard">System Monitor</a></li><li><a href="/network">Network Monitor</a></li><li><a href="/" id="logbutton">Log out</a></li>';
                 $('#logbutton').on('click', function (event) {
                     event.preventDefault(); // To prevent default href
                     document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

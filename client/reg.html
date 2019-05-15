@@ -81,28 +81,27 @@
 
 
     <div class="container">
-        <div class="row tall-row">
-            <div class="col-lg-12">
-                <h1>Sensors</h1>
-                <hr>
+        <div class="well">
+            <div class="row tall-row">
+                <div class="col-lg-12">
+                    <h1>Create new account:</h1>
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="inputForms" class="form-group">
+                        <input class="form-control" id="inputLogin" placeholder="Login">
+                        <input class="form-control" id="inputPassword" placeholder="Password" type="password">
+                        <input class="form-control" id="inputRePassword" placeholder="Retype password" type="password">
+                    </div>
+                    <a id="regButton" class="btn">Register</a>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class=col-md-4>
-                <h2>NodeMCU-0</h2>
-                <h3>DHT11</h3>
-                <h4>Temperature: <div id="dhtTemp"></div>
-                </h4>
-                <h4>Humidity: <div id="dhtRh"></div>
-                </h4>
-                <hr>
-                <h3>DS18B20</h3>
-                <h4>Temperature: <div id="dsTemp"></div>
-                </h4>
-                <hr>
-            </div>
-        </div>
-        <script src="js/sensors.js"></script>
+    </div>
+    <script src="js/reg.js"></script>
 </body>
 
 </html>

@@ -1,14 +1,15 @@
 const express = require('express');
 var config = require('./config.json');
-
-const uuid = require('uuid/v4');
 const cookieParser = require('cookie-parser');
 
 const app = express();
 
 const api = require('./server/api');
+const login = require('./server/login');
+const reg = require('./server/reg');
 const loginExceptions = ['/img/', '/css/', '/js/', '/login', '/404.html', '/favicon.ico', '/api/login', '/api/sysinfo/mac', '/api/sysinfo/ip', '/index', '/api/sensors'];
-var idArray = [];
+global.idArray = [];
+
 const staticDirectory = __dirname + '/client';
 
 app.use(express.urlencoded({ extended: true }));
@@ -36,17 +37,34 @@ app.use(express.static(staticDirectory));
 
 app.use('/api', api);
 
+app.use('/reg', reg);
+
+app.use('/login', login);
+/*
+app.route('/login')
+    .get(function (req, res) {
+        res.sendFile(staticDirectory + '/login.html');
+    })
+    .post(function (req, res) {
+        console.log(`Got post req, login=${req.body.login}, password=${req.body.pass}`);
+        if (req.body.login === 'admin' && req.body.pass === '12345') {
+            let sessionid = uuid();
+            idArray.push(sessionid);
+            res.cookie('sessionid', sessionid, { path: '/', secure: false }).send('access_granted');
+            console.log('Access granted. sessionid=' + sessionid);
+        } else {
+            res.status('403').send('access_denied');
+            console.log('Access denied.');
+        }
+    });
+*/
 if (config.webdav.enabled) {
     const webdav = require('webdav-server').v2;
     const webdavServer = new webdav.WebDAVServer();
     app.use(webdav.extensions.express('/webdav', webdavServer));
 }
 
-app.route('/login')
-    .get(function (req, res) {
-        res.sendFile(staticDirectory + '/' + 'login.html');
-    })
-    .post(auth);
+
 
 app.post('/logout', function (req, res) {
     let sessionid = req.cookies.sessionid;
@@ -115,15 +133,3 @@ function isLoginException(url) {
     return isException;
 }
 
-function auth(req, res) {
-    console.log(`Got post req, login=${req.body.login}, password=${req.body.pass}`);
-    if (req.body.login === 'admin' && req.body.pass === '12345') {
-        let sessionid = uuid();
-        idArray.push(sessionid);
-        res.cookie('sessionid', sessionid, { path: '/', secure: false }).send('access_granted');
-        console.log('Access granted. sessionid=' + sessionid);
-    } else {
-        res.status('403').send('access_denied');
-        console.log('Access denied.');
-    }
-} 
