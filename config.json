@@ -6,7 +6,7 @@
         "enabled" : true
     },
     "network" : {
-        "enabled" : true,
+        "enabled" : false,
         "updater_timeout" : 50000,
         "interface" : 1,
         "subnet" : "10.10.10."
@@ -15,6 +15,6 @@
         "enabled" : false
     },
     "auth" : {
-        "enabled" : true
+        "enabled" : false
     }
 } 

@@ -1,10 +1,15 @@
 updateData();
-setInterval(updateData, 10000)
+setInterval(updateData, 1000)
+
+$('#buzzBtn').click(function () {
+    $.get('/api/sensors/buzz');
+});
 
 function updateData() {
-    $.get('/api/sensors/temp', '', function (data) {
-        $('#dhtTemp').text(`${data.sensors[1].data[0].value}°C`);
-        $('#dhtRh').text(`${data.sensors[1].data[1].value}`);
-        $('#dsTemp').text(`${data.sensors[0].data[0].value}`);
+    $.get('/api/sensors/weatherware', '', function (data) {
+        $('#temp').text(`${data.temp} °C`);
+        $('#pres').text(`${data.pres} Pa`);
+        $('#light').text(`${data.light}`);
     });
 }
+

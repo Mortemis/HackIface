@@ -88,18 +88,17 @@
             </div>
         </div>
         <div class="row">
-            <div class=col-md-4>
-                <h2>NodeMCU-0</h2>
-                <h3>DHT11</h3>
-                <h4>Temperature: <div id="dhtTemp"></div>
-                </h4>
-                <h4>Humidity: <div id="dhtRh"></div>
-                </h4>
-                <hr>
-                <h3>DS18B20</h3>
-                <h4>Temperature: <div id="dsTemp"></div>
-                </h4>
-                <hr>
+            <div class="col-md-4">
+                <div class="panel panel-default" style="padding:5px">
+                    <h2>Weatherware</h2>
+                    <h4>Temperature: <div id="temp"></div>
+                    </h4>
+                    <h4>Atmospheric pressure: <div id="pres"></div>
+                    </h4>
+                    <h4>Light: <div id="light"></div>
+                    </h4>
+                    <button id="buzzBtn" type="button" class="btn btn-danger" style="outline: none">Alarm</button>
+                </div>
             </div>
         </div>
         <script src="js/sensors.js"></script>
