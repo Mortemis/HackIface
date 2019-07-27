@@ -1,0 +1,41 @@
+<nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/index">Home</a>
+            </div>
+            <ul id="navbar" class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/sensors">Sensors</a>
+                </li>
+                <li>
+                    <a href="/dashboard">System Monitor</a>
+                </li>
+                <li>
+                    <a href="/network">Network Monitor</a>
+                </li>
+                <!--
+                <li>
+                    <a href="/login" id="logbutton">Log in</a>
+                </li>
+                -->
+            </ul>
+        </div>
+        <script>
+        //document.getElementById('navbar').innerHTML = '<li><a href="/sensors">Sensors</a></li><li><a href="/dashboard">System Monitor</a></li><li><a href="/network">Network Monitor</a></li><li><a href="/" id="logbutton">Log out</a></li>';
+        //Uncomment when log in enabled
+        /*
+            if (document.cookie.indexOf('sessionid') !== -1) {
+                console.log(document.cookie);
+                document.getElementById('navbar').innerHTML = '<li><a href="/sensors">Sensors</a></li><li><a href="/dashboard">System Monitor</a></li><li><a href="/network">Network Monitor</a></li><li><a href="/" id="logbutton">Log out</a></li>';
+                $('#logbutton').on('click', function (event) {
+                    event.preventDefault(); // To prevent default href
+                    document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    $.post('/logout', {}, function (data) {
+                        document.location.href = '/';
+                    });
+                });
+            } else {
+                document.getElementById('navbar').innerHTML = '<li><a href="/login">Log in</a></li>';
+            }*/
+        </script>
+    </nav>

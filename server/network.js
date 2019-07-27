@@ -72,7 +72,7 @@ function checkHost(ip) {
 
             if (host.is_alive == true) {
                 var _mac = 'N/A';
-                arp.getMAC(host.ip, function (err, mac) {
+                /*arp.getMAC(host.ip, function (err, mac) {
                     if (!err) {
                         if (host.ip != myIP) { //Bug here - undefined on selfscan
                             if (!mac == undefined) {
@@ -87,7 +87,7 @@ function checkHost(ip) {
                             });
                         }
                     }
-                });
+                });*/
             }
         });
     });

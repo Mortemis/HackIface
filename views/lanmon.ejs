@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include partials/head %>
+</head>
+
+<body>
+
+    <!-- <a href="https://github.com/brobin/hacker-bootstrap"><img style="position: absolute; top: 0; left: 0; border: 0;z-index:1001;" src="img/fork.png" alt="Fork me on GitHub"></a> -->
+
+    <!-- Navigation menu -->
+    <% include partials/nav %>
+
+
+    <div class="container">
+        <div class="row tall-row">
+            <div class="col-lg-12">
+                <h1>LAN Monitor</h1>
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <%if (isEnabled) { %>
+                    <% include lanmon/content %>
+                    <%} else {%>
+                    <% include lanmon/placeholder %>
+                    <% } %>
+            </div>
+        </div>
+        <!-- <div class>
+
+        </div> -->
+        <script src="js/lanmonitor.js"></script>
+
+</body>
+
+</html>

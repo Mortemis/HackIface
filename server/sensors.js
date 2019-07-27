@@ -3,19 +3,31 @@ const udp = require('dgram');
 const router = express.Router();
 var config = require('../config.json');
 
+const NODEMCU_HOST = '10.10.10.192';
+const NODEMCU_PORT = 666;
 const WEATHERWARE_HOST = '10.10.10.200';
 const WEATHERWARE_PORT = 333;
+
 const SENSOR_INTERVAL = 1000;
-var weatherware = udp.createSocket('udp4');
+
 var cmd = Buffer.from('sens\n');
-var parsedData = { light: 'N/A', temp: 'N/A', pres: 'N/A' };
+
+var nodemcu = udp.createSocket('udp4');
+var weatherware = udp.createSocket('udp4');
+
+var nodemcuData = {dstemp: 'N/A', dhttemp: 'N/A', dhtrh: 'N/A'}; 
+var weatherwareData = { light: 'N/A', temp: 'N/A', pres: 'N/A' };
 
 router.get('/', function (req, res) {
     res.send('Under construction');
 });
 
 router.get('/weatherware', function (req, res) {
-    res.send(parsedData);
+    res.send(weatherwareData);
+});
+
+router.get('/nodemcu', function (req, res) {
+    res.send(nodemcuData);
 });
 
 router.get('/buzz', function (req, res) {
@@ -33,15 +45,25 @@ weatherware.on('message', function (msg, info) {
     }
 });
 
+//Response processor
+nodemcu.on('message', function (msg, info) {
+    try {
+        nodemcuData = JSON.parse(msg.toString());
+    } catch (error) {
+        console.log('[sensors] Nodemcu failure');
+    }
+});
+
+
 setInterval(requestSensorData, SENSOR_INTERVAL);
 
 function parseSensorData(rawData) {
     let strings = rawData.split(',');
-    parsedData.light = removeBrackets(strings[0]);
-    parsedData.temp = removeBrackets(strings[1]); // + ' °C';
-    parsedData.pres = removeBrackets(strings[2]); // + ' Pa';
+    weatherwareData.light = removeBrackets(strings[0]);
+    weatherwareData.temp = removeBrackets(strings[1]); // + ' °C';
+    weatherwareData.pres = removeBrackets(strings[2]); // + ' Pa';
     if (config.debug_mode == true) {
-        console.log('[sensors] Weatherware > ' + parsedData.toString);
+        console.log('[sensors] Weatherware > ' + weatherwareData.toString);
     }
 }
 
@@ -56,7 +78,16 @@ function requestSensorData() {
             weatherware.close();
         } else {
             if (config.debug_mode == true) {
-                console.log('[sensors] > Requested sensor data...');
+                console.log('[sensors] > Requested weatherware data...');
+            }
+        }
+    });
+    nodemcu.send(cmd, NODEMCU_PORT, NODEMCU_HOST, function (error) {
+        if (error) {
+            nodemcu.close();
+        } else {
+            if (config.debug_mode == true) {
+                console.log('[sensors] > Requested nodemcu data...');
             }
         }
     });

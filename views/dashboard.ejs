@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include partials/head %>
+</head>
+
+<body>
+
+    <!-- Navigation menu -->
+    <% include partials/nav %>
+
+
+    <div class="container">
+        <div class="row tall-row">
+            <div class="col-lg-12">
+                <h1 id="ipAddrText">Main server monitor</h1>
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h2 id="processorLoadText">Processor load</h2>
+                <div class="progress progress-striped active">
+                    <div id="loadBar" class="progress-bar progress-bar-info"></div>
+                </div>
+                <script src="js/proc.js"></script>
+                <h2 id=memText>Memory</h2>
+                <div class="progress progress-striped active">
+                    <div id="memBar" class="progress-bar progress-bar-info" style="width: 0%"></div>
+                </div>
+
+                <!-- <h2>Disk 1</h2>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-info" style="width: 0%"></div>
+                </div>
+                <h2>Disk 2</h2>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-info" style="width: 0%"></div>
+                </div> -->
+            </div>
+            <div class="col-md-4">
+                <h2>Core temperature</h2>
+                <h1 id="temperatureText"></h1>
+            </div>
+            <div class="col-md-4">
+                <h2>Uptime</h2>
+                <h3 id="uptimeText"></h3>
+            </div>
+        </div>
+        <hr>
+        <script src="js/dashboard.js"></script>
+</body>
+
+</html>

@@ -11,5 +11,10 @@ function updateData() {
         $('#pres').text(`${data.pres} Pa`);
         $('#light').text(`${data.light}`);
     });
+    $.get('/api/sensors/nodemcu', '', function (data) {
+        $('#dstemp').text(`${data.dstemp} °C`);
+        $('#dhttemp').text(`${data.dhttemp} °C`);
+        $('#dhtrh').text(`${data.dhtrh}`);
+    });
 }
 

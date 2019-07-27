@@ -16,6 +16,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
+app.set('views', __dirname + '/views');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
 // Redirect... 
 if (config.auth.enabled) {
     app.use((req, res, next) => {
@@ -40,31 +43,12 @@ app.use('/api', api);
 app.use('/reg', reg);
 
 app.use('/login', login);
-/*
-app.route('/login')
-    .get(function (req, res) {
-        res.sendFile(staticDirectory + '/login.html');
-    })
-    .post(function (req, res) {
-        console.log(`Got post req, login=${req.body.login}, password=${req.body.pass}`);
-        if (req.body.login === 'admin' && req.body.pass === '12345') {
-            let sessionid = uuid();
-            idArray.push(sessionid);
-            res.cookie('sessionid', sessionid, { path: '/', secure: false }).send('access_granted');
-            console.log('Access granted. sessionid=' + sessionid);
-        } else {
-            res.status('403').send('access_denied');
-            console.log('Access denied.');
-        }
-    });
-*/
+
 if (config.webdav.enabled) {
     const webdav = require('webdav-server').v2;
     const webdavServer = new webdav.WebDAVServer();
     app.use(webdav.extensions.express('/webdav', webdavServer));
 }
-
-
 
 app.post('/logout', function (req, res) {
     let sessionid = req.cookies.sessionid;
@@ -83,7 +67,7 @@ app.get('/logout', function (req, res) {
 });
 
 app.get('/index', function (req, res) {
-    res.sendFile(staticDirectory + '/index.html');
+    res.render('index');
 });
 
 app.get('/example', function (req, res) {
@@ -91,27 +75,20 @@ app.get('/example', function (req, res) {
 });
 
 app.get('/dashboard', function (req, res) {
-    res.sendFile(staticDirectory + '/' + 'dashboard.html');
+    res.render('dashboard');
 });
 
 app.get('/network', function (req, res) {
-    if (config.network.enabled) {
-        res.sendFile(staticDirectory + '/' + 'lanmonitor.html');
-    } else {
-        res.sendFile(staticDirectory + '/' + 'lanmonitorplaceholder.html');
-    }
+    res.render('lanmon', {isEnabled: config.network.enabled});
 });
 
 app.get('/sensors', function (req, res) {
-    res.sendFile(staticDirectory+'/sensors.html');
+    res.render('sensors');
 });
-
-
-
 
 // 404 page.
 app.get('*', function (req, res) {
-    res.sendFile(staticDirectory + '/404.html');
+    res.render('404');
 });
 //#endregion
 
