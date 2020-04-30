@@ -11,7 +11,7 @@
     "express": "^4.16.4",
     "express-basic-auth": "^1.2.0",
     "express-session": "^1.15.6",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jsonwebtoken": "^8.5.0",
     "local-devices": "^2.0.0",
     "local-network-scanner": "^0.2.0",
